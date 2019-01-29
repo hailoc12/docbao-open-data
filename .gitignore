@@ -1,2 +1,2 @@
-/data/*
+/data/*.json
 /lib/__pycache__
