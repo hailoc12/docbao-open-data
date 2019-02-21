@@ -44,8 +44,8 @@ class DocbaoOpenData():
     
     def get_trending_keyword_list(self):
         result = list()
-        for keyword, count in self.data[self.TREND_FILENAME].items():
-            result.append({"keyword":keyword,"count":count})
+        for item in self.data[self.TREND_FILENAME]["trending_keyword_list"]:
+            result.append({"keyword":item["keyword"],"count":item["increase_freq"]})
         return result
             
     def get_new_keywords(self):
