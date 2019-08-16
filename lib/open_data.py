@@ -1,6 +1,8 @@
 # Function: show how to fetch open data from Docbao Project
 from lib import *
 import json
+import jsonpickle
+import requests
 
 # CLASS
 class DocbaoOpenData():
@@ -8,7 +10,7 @@ class DocbaoOpenData():
     Use: object to get data from all json files
     '''
     # Const
-    DATA_URL = "http://theodoibaochi.com/export/"
+    DATA_URL = "https://theodoibaochi.com/export/"
     DATA_PATH = "data"
     EXPORT_PATH = "export"
 
@@ -23,9 +25,11 @@ class DocbaoOpenData():
 
     MAX_DISPLAY = 10
 
-    def __init__(self, datasource="http://theodoibaochi.com"):
+    def __init__(self, datasource="https://theodoibaochi.com", API_URL=None, AUTH_TOKEN=None):
         self.data = dict()
         self.DATA_URL = datasource + "/export/"
+        self.API_URL = API_URL
+        self.AUTH_TOKEN = AUTH_TOKEN
 
     def load_data(self):
         for filename in self.DATA_FILES:
@@ -40,7 +44,7 @@ class DocbaoOpenData():
         return self.data[self.DATABASE_LOG_FILENAME]["database_count"]
     
     def get_update_time(self):
-        return self.data[self.KEYWORD_LOG_FILENAME]["time"]
+        return self.data[self.DATABASE_LOG_FILENAME]["update_time"]
     
     def get_trending_keyword_list(self):
         result = list()
@@ -65,6 +69,25 @@ class DocbaoOpenData():
             if keyword in topic.lower():
                 result.append(article)
         return result
+
+    def search_articles(self, search_string, full_search, tag_filter):
+        API_url = self.API_URL
+        data = jsonpickle.dumps({'search': search_string, 'full_search': full_search, 'tag_filter': tag_filter})
+        headers = {"Content-type": "application/json", "Authorization": "Bearer " + self.AUTH_TOKEN}
+        response = requests.get(API_url, data=data, headers=headers)
+        if response.status_code  == 200:
+            result= jsonpickle.decode(response.content)
+            if 'posts' in result: 
+                return result['posts'] 
+            else:
+                return None
+
+        else:
+            print("Error in updating category. Error code: %s" % str(response.status_code))
+            print("Error data below")
+            print(data)
+            return False
+        pass
 
     def fetch_json_data(self, json_name):
         '''
