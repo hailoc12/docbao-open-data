@@ -76,7 +76,7 @@ class DocbaoOpenData():
         headers = {"Content-type": "application/json", "Authorization": "Bearer " + self.AUTH_TOKEN}
         response = requests.get(API_url, data=data, headers=headers)
         if response.status_code  == 200:
-            result= jsonpickle.decode(response.content)
+            result= jsonpickle.decode(str(response.content, encoding='utf-8'))
             if 'posts' in result: 
                 return result['posts'] 
             else:
