@@ -3,7 +3,7 @@
 #-------------------------------------------------------------------------------------------------------------
 from lib.open_data import *
 
-open_data = DocbaoOpenData("https://theodoibaochi.com") 
+open_data = DocbaoOpenData("https://tech-monitor.vnalert.vn") 
 
 print("Tải dữ liệu...")
 open_data.download_data() 
